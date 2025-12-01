@@ -62,3 +62,21 @@ def get_reviews(product_id):
         })
 
     return jsonify(data)
+
+
+
+@public_bp.route("/products/<int:product_id>/qna", methods=["GET"])
+def get_qna(product_id):
+    qna = ProductQnA.query.filter_by(product_id=product_id).all()
+
+    data = []
+    for q in qna:
+        data.append({
+            "id": q.id,
+            "question": q.question,
+            "answer": q.answer,
+            "user": q.user.name,
+            "created_at": q.created_at.strftime("%Y-%m-%d"),
+        })
+
+    return jsonify(data)
