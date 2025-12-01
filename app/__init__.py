@@ -30,7 +30,7 @@ def create_app(config_class=None):
     # EXTENSIONS
     # ------------------------------------
     db.init_app(app)
-    migrate.init_app(app.db)
+    migrate.init_app(app, db)
     login_manager.init_app(app)
 
     # all React front-end to communite
