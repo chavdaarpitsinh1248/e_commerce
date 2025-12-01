@@ -2,7 +2,6 @@ from datetime import datetime
 from app.extensions import db, login_manager
 from flask_login import UserMixin
 
-
 # ----------------------------------------------------------------
 # LOGIN LOADER
 # ----------------------------------------------------------------
@@ -92,7 +91,7 @@ class ProductImage(db.Model):
 # ----------------------------------------------------------------    
 class Cart(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, ForeignKey("user.id"), unique=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), unique=True)
 
     items = db.relationship("CartItem", backref="cart", lazy=True, cascade="all, delete")
 
@@ -107,7 +106,7 @@ class CartItem(db.Model):
     cart_id = db.Column(db.Integer, db.ForeignKey("cart.id"), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
 
-    quantity = db.COlumn(db.Integer, default=1)
+    quantity = db.Column(db.Integer, default=1)
 
     product = db.relationship("Product")
 
