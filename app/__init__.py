@@ -19,7 +19,7 @@ def create_app(config_class=None):
     # CONFIG
     # ------------------------------------
     if config_class:
-        app.config.form_object(config_class)
+        app.config.from_object(config_class)
     else:
         app.config['SECRET_KEY'] = "ecommercesite"
         app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///ecommerce.db"
