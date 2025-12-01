@@ -25,3 +25,22 @@ def get_products():
         })
 
     return jsonify(data)
+
+
+
+@public_bp.route("/products/<int:product_id>", methods=["GET"])
+def get_product(product_id):
+    product = Product.query.get_or_404(product_id)
+
+    data = {
+        "id": product.id,
+        "title": product.title,
+        "description": product.description,
+        "price": product.price,
+        "stock": product.stock,
+        "category": product.category.name if product.category else None,
+        "images": [img.image_url for img in product.images],
+        "supplier": product.supplier.name,
+    }
+
+    return jsonify(data)
