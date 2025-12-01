@@ -148,4 +148,32 @@ class OrderItem(db.Model):
 # ----------------------------------------------------------------
 # REVIEWS
 # ----------------------------------------------------------------
+class Review(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
 
+    product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+
+    rating = db.Column(db.Integer, nullable=False)  # 1-5 stars
+    comment = db.Column(db.Text)
+    created_at= db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship("User")
+
+
+
+# ----------------------------------------------------------------
+# PRODUCT Q&A
+# ----------------------------------------------------------------
+class ProductQnA(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+
+    question = db.Column(db.Text, nullable=False)
+    answer = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship("User")
+    
