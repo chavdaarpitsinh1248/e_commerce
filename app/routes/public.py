@@ -44,3 +44,21 @@ def get_product(product_id):
     }
 
     return jsonify(data)
+
+
+
+@public_bp.route("/products/<int:product_id>/reviews", methods=["GET"])
+def get_reviews(product_id):
+    reviews = Review.query.filter_by(product_id=product_id).all()
+
+    data = []
+    for r in reviews:
+        data.append({
+            "id": r.id,
+            "rating": r.rating,
+            "comment": r.comment,
+            "user": r.user.name,
+            "created_at": r.created_at.strftime("%Y-%m-%d"),
+        })
+
+    return jsonify(data)
