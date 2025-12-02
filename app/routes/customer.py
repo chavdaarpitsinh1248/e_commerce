@@ -87,3 +87,32 @@ def update_cart_item():
     db.session.commit()
 
     return jsonify({"message": "Quantity updated"})
+
+
+
+@customer_bp.route("/cart/remove/<int:item_id>", methods=["DELETE"])
+@login_required
+def remove_item(item_id):
+    item = CartItem.query.get_or_404(item_id)
+
+    if item.cart.user_id != current_user.id:
+        return jsonify({"error": "Unauthorized"}), 403
+
+    db.session.delete(item)
+    db.session.commit()
+
+    return jsonify({"message": "Item removed"})
+
+
+
+@customer_bp.route("/cart/clear", methods=["DELETE"])
+@login_required
+def clear_cart():
+    cart = get_or_create_cart(current_user)
+
+    for item in cart.items:
+        db.session.delete(item)
+    
+    db.session.commit()
+
+    return jsonify({"message": "Cart cleared"})
