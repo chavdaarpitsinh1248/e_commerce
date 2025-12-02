@@ -9,6 +9,7 @@ from .routes.public import public_bp
 from .routes.customer import customer_bp
 from .routes.supplier import supplier_bp
 from .routes.admin import admin_bp
+from .routes.auth import auth_bp
 import os
 
 
@@ -43,6 +44,7 @@ def create_app(config_class=None):
     app.register_blueprint(customer_bp, url_prefix="/api/customer")
     app.register_blueprint(supplier_bp, url_prefix="/api/supplier")
     app.register_blueprint(admin_bp, url_prefix="/api/admin")
+    app.register_blueprint(auth_bp, url_prefix="/auth")
 
 
     return app
