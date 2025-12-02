@@ -99,3 +99,25 @@ def update_product(product_id):
     db.session.commit()
 
     return jsonify({"message": "Product updated"})
+
+
+
+@supplier_bp.route("/product/<int:product_id>/stock", methods=["PUT"])
+@login_required
+def update_stock(product_id):
+    ok, res, code = supplier_required()
+    if not ok:
+        return res, code
+
+    product = Product.query.get_or_404(product_id)
+
+    if product.supplier_id != current_user.id:
+        return jsonify({"error": "Unauthorized"}), 403
+    
+    data = request.json
+    new_stock = data.get("stock")
+
+    product.stock = new_stock
+    db.session.commit()
+
+    return jsonify({"message": "Stock updated"})
