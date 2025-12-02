@@ -27,7 +27,7 @@ def status():
 @login_required
 def add_product():
     ok, res, code = supplier_required()
-    if not pk:
+    if not ok:
         return res, code
     
     data = request.json
@@ -121,3 +121,26 @@ def update_stock(product_id):
     db.session.commit()
 
     return jsonify({"message": "Stock updated"})
+
+
+
+@supplier_bp.route("/my-products", methods=["GET"])
+@login_required
+def my_products():
+    ok, res, code = supplier_required()
+    if not ok:
+        return res, code
+
+    products = Product.query.filter_by(supplier_id=current_user.id).all()
+
+    data = []
+    for p in products:
+        data.append({
+            "id": p.id,
+            "title": p.title,
+            "price": p.price,
+            "stock": p.stock,
+            "thumbnail": p.thumbnail
+        })
+
+        return jsonify(data)
