@@ -116,3 +116,45 @@ def clear_cart():
     db.session.commit()
 
     return jsonify({"message": "Cart cleared"})
+
+
+
+@customer_bp.route("/checkout", methods=["POST"])
+@login_required
+def checkout():
+    cart = get_or_create_cart(current_user)
+
+    if not cart.items:
+        return jsonify({"error": "Cart is empty"}), 400
+    
+    total = 0
+    for item in cart.items:
+        total += item.product.price * item.quantity
+
+    # Create order
+    order = Order(user_id=current_user.id, total_amount=total)
+    db.session.add(order)
+    db.session.commit()
+
+    # Add items to order
+    for item in cart.items:
+        order_item = OrderItem(
+            order_id=order.id,
+            product_id=item.product_id,
+            quantity=item.quantity,
+            price=item.product.price
+        )
+        db.session.add(order_item)
+
+
+    # Clear cart 
+    for item in cart.items:
+        db.session.delete(item)
+    
+    db.session.commit()
+
+    return jsonify({
+        "message": "Order created",
+        "order_id": order.id,
+        "total": total
+    })
