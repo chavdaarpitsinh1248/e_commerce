@@ -73,3 +73,29 @@ def add_image(product_id):
     db.session.commit()
 
     return jsonify({"message": "Image added"})
+
+
+
+@supplier_bp.route("/product/<int:product_id>/update", methods=["PUT"])
+@login_required
+def update_product(product_id):
+    ok, res, code = supplier_required()
+    if not ok:
+        return res, code
+
+    product = Product.query.get_or_404(product_id)
+
+    if product.supplier_id != current_user.id:
+        return jsonify({"error": "Unauthorized"}), 403
+    
+    data  = request.json
+
+    product.title = data.get("title", product.title)
+    product.description = data.get("description", product.description)
+    product.price = data.get("price", product.price)
+    product.category_id = data.get("category_id", product.category_id)
+    product.thumbnail = data.get("thumbnail", product.thumbnail)
+
+    db.session.commit()
+
+    return jsonify({"message": "Product updated"})
