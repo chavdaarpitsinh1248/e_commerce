@@ -49,3 +49,27 @@ def add_product():
         "message": "Product created",
         "product_id": product.id
     })
+
+
+
+@supplier_bp.route("/product/<int:product_id>/add-image", methods=["POST"])
+@login_required
+def add_image(product_id):
+    ok, res, code = supplier_required()
+    if not ok:
+        return res, code
+
+    product = Product.query.get_or_404(product_id)
+
+    # supplier must own product
+    if product.supplier_id != current_user.id:
+        return jsonify({"error": "Unauthorized"}), 403
+    
+    data = request.json
+    image_url = data.get("image_url")
+
+    img = ProductImage(product_id=product.id, image_url=image_url)
+    db.session.add(img)
+    db.session.commit()
+
+    return jsonify({"message": "Image added"})
